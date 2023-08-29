@@ -3,7 +3,9 @@ variable "project_id" {
   description = "Project ID"
   type        = string
 }
-
+######################
+# IMPORTANT
+# Only hyphens (-), underscores (_), lowercase characters, and numbers are allowed
 variable "labels" {
   description = "Map of labels for project"
   default     = {}
@@ -13,10 +15,4 @@ variable "labels" {
 variable "list_apis" {
   description = "List of APIs to be enabled in the project"
   type        = list(string)
-}
-
-variable "metadata" {
-  description = "Map of project metadata values"
-  default     = {}
-  type        = map(string)
 }
