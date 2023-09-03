@@ -36,6 +36,6 @@ RUN if [ "${TERRAFORM_VERSION}" = "latest" ]; then \
 # Install gcloud CLI
 ####################
 RUN curl -L "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-${GCLOUD_VERSION}-linux-x86_64.tar.gz" > gcloud.tar.gz && \
-    tar -xf gcloud.tar.gz && ./google-cloud-sdk/install.sh && rm gcloud.tar.gz
+    tar -xf gcloud.tar.gz && ./google-cloud-sdk/install.sh --quiet && rm gcloud.tar.gz && ln -s /config/google-cloud-sdk/bin/gcloud /usr/local/bin/gcloud
 
 ENTRYPOINT [ "/bin/bash" ]

@@ -1,0 +1,44 @@
+name: Continuous Integration - Code Quality
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+    branches:
+      - 'main'
+      - 'dev'
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  Code-Quality-Checks:
+    name: Code Quality Checks
+    runs-on: ubuntu-22.04
+    container: us-central1-docker.pkg.dev/reditum-global-iac/iac/code-quality:1.0.0
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure Safe Directory Exception
+        run: git config --global --add safe.directory /__w/reditum-terraform-modules/reditum-terraform-modules
+
+      - name: Checking files
+        run: |
+          echo "Running code quality checks ..."
+          git clean -dfx && pre-commit run --all-files
+
+  Terraform-Format-Checks:
+    name: Terraform Code Format Checks
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform validate
+        run: terraform fmt -recursive -check
+        continue-on-error: false
