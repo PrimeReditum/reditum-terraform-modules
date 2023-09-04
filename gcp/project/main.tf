@@ -17,14 +17,6 @@ resource "google_service_account" "terraform_orchestrator" {
   project      = var.project_id
 }
 
-resource "google_project_iam_binding" "terraform_orchestrator" {
-  project = var.project_id
-  role    = "roles/owner"
-  members = [
-    "serviceAccount:${google_service_account.terraform_orchestrator.email}"
-  ]
-}
-
 resource "google_storage_bucket" "iac_state" {
   name                        = "${var.project_id}-tfstate"
   project                     = var.project_id
