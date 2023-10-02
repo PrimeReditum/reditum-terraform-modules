@@ -100,6 +100,17 @@ resource "google_cloud_run_service_iam_member" "cloud_run_iam_additive" {
   service  = each.value.name
 }
 
+resource "google_compute_instance_iam_member" "compute_instance_additive" {
+  for_each = {
+    for binding in var.resource_bindings : "${binding.name}.${binding.role}" => binding
+    if binding.resource_type == "compute_instance_service"
+  }
+  instance_name = each.value.name
+  member        = var.member
+  project       = each.value.project_id
+  role          = each.value.role
+}
+
 resource "google_kms_crypto_key_iam_member" "kms_crypto_key_iam_additive" {
   for_each = {
     for binding in var.resource_bindings : "${binding.name}.${binding.role}" => binding

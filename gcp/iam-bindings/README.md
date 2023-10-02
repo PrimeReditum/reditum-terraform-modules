@@ -175,6 +175,26 @@ In order to use this module, create a `bindings.json` file on the same place whe
 }
 ```
 
+### Compute Instance Service Bindings
+```json
+{
+  "locals": {
+    "organization_iam": [],
+    "project_iam": [],
+    "external_project_iam": [],
+    "folder_iam": [],
+    "resource_iam": [
+      {
+        "resource_type": "compute_instance_service",
+        "name": "<compute-instance-name>",
+        "project_id": "<project-id>",
+        "role": "<role>"
+      }
+    ]
+  }
+}
+```
+
 ### KMS Crypto Key Bindings
 ```json
 {
