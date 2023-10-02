@@ -8,18 +8,15 @@ This module is mant for use with Terraform 1.0+
 ## IAM Bindings
 You can choose the following resource types to apply in the IAM bindings:
 
-- Projects (`projects` variable)
+- Projects and external bindings (`projects` variable)
 - Organizations(`organizations` variable)
 - Folders (`folders` variable)
-- Service Accounts (`service_accounts` variable)
-- Subnetworks (`subnets` variable)
-- Storage buckets (`storage_buckets` variable)
-- Pubsub topics (`pubsub_topics` variable)
-- Pubsub subscriptions (`pubsub_subscriptions` variable)
-- Kms Key Rings (`kms_key_rings` variable)
-- Kms Crypto Keys (`kms_crypto_keys` variable)
-- Secret Manager Secrets (`secrets` variable)
-- DNS Zones (`managed_zones` variable)
+- Cloud Run Service (`cloud_run_service` variable)
+- Compute Instance (`compute_instance_service` variable)
+- Kms Crypto Keys (`kms_crypto_key` variable)
+- Kms Key Rings (`kms_key_ring` variable)
+- Secret Manager Secrets (`secret_manager_secret` variable)
+- Storage buckets (`storage_bucket` variable)
 
 Set the specified variable on the module call to choose the resources to affect.
 
@@ -66,20 +63,20 @@ In order to use this module, create a `bindings.json` file on the same place whe
 ```json
 {
   "locals": {
+    "external_project_iam": [],
+    "folder_iam": [],
     "organization_iam": [
       {
-        "organization_id": "<organization-id>",
-        "role": "<role>",
         "condition": {
-          "title": "<title>",
           "description": "<description>",
-          "expression": "<expression>"
-        }
+          "expression": "<expression>",
+          "title": "<title>"
+        },
+        "organization_id": "<organization-id>",
+        "role": "<role>"
       }
     ],
     "project_iam": [],
-    "external_project_iam": [],
-    "folder_iam": [],
     "resource_iam": []
   }
 }
@@ -89,20 +86,20 @@ In order to use this module, create a `bindings.json` file on the same place whe
 ```json
 {
   "locals": {
+    "external_project_iam": [],
+    "folder_iam": [],
     "organization_iam": [],
     "project_iam": [
       {
-        "project_id": "<project-id>",
-        "role": "<role>",
         "condition": {
-          "title": "<title>",
           "description": "<description>",
-          "expression": "<expression>"
-        }
+          "expression": "<expression>",
+          "title": "<title>"
+        },
+        "project_id": "<project-id>",
+        "role": "<role>"
       }
     ],
-    "external_project_iam": [],
-    "folder_iam": [],
     "resource_iam": []
   }
 }
@@ -112,20 +109,20 @@ In order to use this module, create a `bindings.json` file on the same place whe
 ```json
 {
   "locals": {
-    "organization_iam": [],
-    "project_iam": [],
     "external_project_iam": [
       {
-        "project_id": "<project-id>",
-        "role": "<role>",
         "condition": {
-          "title": "<title>",
           "description": "<description>",
-          "expression": "<expression>"
-        }
+          "expression": "<expression>",
+          "title": "<title>"
+        },
+        "project_id": "<project-id>",
+        "role": "<role>"
       }
     ],
     "folder_iam": [],
+    "organization_iam": [],
+    "project_iam": [],
     "resource_iam": []
   }
 }
@@ -135,20 +132,20 @@ In order to use this module, create a `bindings.json` file on the same place whe
 ```json
 {
   "locals": {
-    "organization_iam": [],
-    "project_iam": [],
     "external_project_iam": [],
     "folder_iam": [
       {
-        "folder_id": "<folder-id>",
-        "role": "<role>",
         "condition": {
-          "title": "<title>",
           "description": "<description>",
-          "expression": "<expression>"
-        }
+          "expression": "<expression>",
+          "title": "<title>"
+        },
+        "folder_id": "<folder-id>",
+        "role": "<role>"
       }
     ],
+    "organization_iam": [],
+    "project_iam": [],
     "resource_iam": []
   }
 }
@@ -158,16 +155,16 @@ In order to use this module, create a `bindings.json` file on the same place whe
 ```json
 {
   "locals": {
-    "organization_iam": [],
-    "project_iam": [],
     "external_project_iam": [],
     "folder_iam": [],
+    "organization_iam": [],
+    "project_iam": [],
     "resource_iam": [
       {
-        "resource_type": "cloud_run_service",
         "location": "<cloud-run-service-location>",
         "name": "<cloud-run-service-name>",
         "project_id": "<project-id>",
+        "resource_type": "cloud_run_service",
         "role": "<role>"
       }
     ]
@@ -179,15 +176,15 @@ In order to use this module, create a `bindings.json` file on the same place whe
 ```json
 {
   "locals": {
-    "organization_iam": [],
-    "project_iam": [],
     "external_project_iam": [],
     "folder_iam": [],
+    "organization_iam": [],
+    "project_iam": [],
     "resource_iam": [
       {
-        "resource_type": "compute_instance_service",
         "name": "<compute-instance-name>",
         "project_id": "<project-id>",
+        "resource_type": "compute_instance_service",
         "role": "<role>"
       }
     ]
@@ -199,17 +196,17 @@ In order to use this module, create a `bindings.json` file on the same place whe
 ```json
 {
   "locals": {
-    "organization_iam": [],
-    "project_iam": [],
     "external_project_iam": [],
     "folder_iam": [],
+    "organization_iam": [],
+    "project_iam": [],
     "resource_iam": [
       {
-        "resource_type": "kms_crypto_key",
+        "key_ring_name": "<kms-key-ring-name>",
         "location": "<kms-crypto-key-location>",
-        "key_ring_name": "kms-key-ring-name",
         "name": "<kms-crypto-key-name>",
         "project_id": "<project-id>",
+        "resource_type": "kms_crypto_key",
         "role": "<role>"
       }
     ]
@@ -221,16 +218,16 @@ In order to use this module, create a `bindings.json` file on the same place whe
 ```json
 {
   "locals": {
-    "organization_iam": [],
-    "project_iam": [],
     "external_project_iam": [],
     "folder_iam": [],
+    "organization_iam": [],
+    "project_iam": [],
     "resource_iam": [
       {
-        "resource_type": "kms_key_ring",
         "location": "<kms-key-ring-location>",
         "name": "<kms-key-ring-name>",
         "project_id": "<project-id>",
+        "resource_type": "kms_key_ring",
         "role": "<role>"
       }
     ]
@@ -242,15 +239,15 @@ In order to use this module, create a `bindings.json` file on the same place whe
 ```json
 {
   "locals": {
-    "organization_iam": [],
-    "project_iam": [],
     "external_project_iam": [],
     "folder_iam": [],
+    "organization_iam": [],
+    "project_iam": [],
     "resource_iam": [
       {
-        "resource_type": "secret_manager_secret",
         "name": "<secret-name>",
         "project_id": "<project-id>",
+        "resource_type": "secret_manager_secret",
         "role": "<role>"
       }
     ]
@@ -262,14 +259,14 @@ In order to use this module, create a `bindings.json` file on the same place whe
 ```json
 {
   "locals": {
-    "organization_iam": [],
-    "project_iam": [],
     "external_project_iam": [],
     "folder_iam": [],
+    "organization_iam": [],
+    "project_iam": [],
     "resource_iam": [
       {
-        "resource_type": "storage_bucket",
         "name": "<bucket-name>",
+        "resource_type": "storage_bucket",
         "role": "<role>"
       }
     ]
