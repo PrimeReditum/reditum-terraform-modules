@@ -109,6 +109,7 @@ resource "google_compute_instance_iam_member" "compute_instance_additive" {
   member        = var.member
   project       = each.value.project_id
   role          = each.value.role
+  zone          = each.value.zone
 }
 
 resource "google_kms_crypto_key_iam_member" "kms_crypto_key_iam_additive" {
