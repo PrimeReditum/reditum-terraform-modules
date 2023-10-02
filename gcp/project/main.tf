@@ -1,3 +1,11 @@
+resource "google_compute_project_metadata" "compute_metadata" {
+  depends_on = [google_project_service.compute_api]
+  metadata = {
+    enable-oslogin = "TRUE"
+  }
+  project = var.project_id
+}
+
 resource "google_project_service" "activate_apis" {
   count                      = length(var.list_apis)
   project                    = var.project_id
