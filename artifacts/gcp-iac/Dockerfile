@@ -9,7 +9,7 @@ FROM python:${TAG}
 
 ARG GCLOUD_VERSION=${GCLOUD_VERSION:-444.0.0}
 ARG IMAGE_TAG=${IMAGE_TAG:-latest}
-ARG TERRAFORM_VERSION=${TERRAFORM_VERSION:-1.5.6}
+ARG TERRAFORM_VERSION=${TERRAFORM_VERSION:-1.6.6}
 
 LABEL maintainer="aguerrero@reditum.ec" \
       description="Allows run Terraform commands for creating GCP resources" \
