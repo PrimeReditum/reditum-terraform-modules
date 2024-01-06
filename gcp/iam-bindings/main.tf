@@ -138,7 +138,7 @@ resource "google_secret_manager_secret_iam_member" "secret_manager_iam_additive"
     if binding.resource_type == "secret_manager_secret"
   }
   member    = var.member
-  project   = each.value.project_id
+  project   = each.value.project_number
   role      = each.value.role
   secret_id = each.value.name
 }
