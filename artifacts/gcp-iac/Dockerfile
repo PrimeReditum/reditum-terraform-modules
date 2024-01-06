@@ -20,6 +20,7 @@ WORKDIR /config
 RUN apk add --no-cache \
     bash=~5 \
     curl=~8 \
+    git=~2 \
     unzip=~6 && \
     python3 -m pip install --no-cache-dir --upgrade pip
 
