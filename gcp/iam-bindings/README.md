@@ -246,7 +246,7 @@ In order to use this module, create a `bindings.json` file on the same place whe
     "resource_iam": [
       {
         "name": "<secret-name>",
-        "project_id": "<project-id>",
+        "project_number": "<project-number>",
         "resource_type": "secret_manager_secret",
         "role": "<role>"
       }
