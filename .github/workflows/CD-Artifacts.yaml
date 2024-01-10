@@ -1,0 +1,102 @@
+name: Continuous Delivery Artifacts
+
+on:
+  push:
+    branches:
+      - 'main'
+
+permissions:
+  contents: read
+
+jobs:
+  Detect-Artifacts-Changes:
+    name: Detect Artifacts Changes
+    runs-on: ubuntu-22.04
+    outputs:
+      code-quality: ${{ steps.filter.outputs.code-quality}}
+      gcp-iac: ${{ steps.filter.outputs.gcp-iac}}
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            code-quality:
+              - 'artifacts/code-quality/**'
+            gcp-iac:
+              - 'artifacts/gcp-iac/**'
+
+  Build-Code-Quality:
+    needs: [Detect-Artifacts-Changes]
+    name: Build Code Quality Docker Image
+    env:
+      IMAGE_NAME: code-quality
+    if: ${{ needs.Detect-Artifacts-Changes.outputs.code-quality == 'true' }}
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up Google Cloud SDK
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: ${{ secrets.TF_SA_KEY }}
+
+      - name: Configure Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          version: '>= 450.0.0'
+
+      - name: Create and push Docker image
+        run: |
+          echo "Creating code-quality Docker image..."
+          cd artifacts/code-quality
+          IMAGE_TAG=$(cat image-tag.txt)
+          DOCKER_IMAGE_NAME=${{ secrets.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG
+          docker build --build-arg IMAGE_TAG=$IMAGE_TAG -f Dockerfile . -t $DOCKER_IMAGE_NAME
+          echo "Pushing Docker image to Artifact Registry..."
+          gcloud auth configure-docker us-central1-docker.pkg.dev
+          docker push $DOCKER_IMAGE_NAME
+
+  Build-GCP-IaC:
+    needs: [Detect-Artifacts-Changes]
+    name: Build GCP IaC Docker Image
+    env:
+      IMAGE_NAME: gcp-iac
+    if: ${{ needs.Detect-Artifacts-Changes.outputs.gcp-iac == 'true' }}
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up Google Cloud SDK
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: ${{ secrets.TF_SA_KEY }}
+
+      - name: Configure Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          version: '>= 450.0.0'
+
+      - name: Create and push Docker image
+        run: |
+          echo "Creating gcp-iac Docker image..."
+          cd artifacts/gcp-iac
+          IMAGE_TAG=$(cat image-tag.txt)
+          DOCKER_IMAGE_NAME=${{ secrets.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG
+          docker build --build-arg IMAGE_TAG=$IMAGE_TAG -f Dockerfile . -t $DOCKER_IMAGE_NAME
+          echo "Pushing Docker image to Artifact Registry..."
+          gcloud auth configure-docker us-central1-docker.pkg.dev
+          docker push $DOCKER_IMAGE_NAME
