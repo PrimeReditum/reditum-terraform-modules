@@ -91,7 +91,7 @@ resource "google_project_iam_member" "project_iam_additive" {
 resource "google_artifact_registry_repository_iam_member" "artifact_registry_repository_iam_additive" {
   for_each = {
     for binding in var.resource_bindings : "${binding.name}.${binding.role}" => binding
-    if binding.resource_type == "cloud_run_service"
+    if binding.resource_type == "artifact_registry_repository_service"
   }
   location   = each.value.location
   member     = var.member
