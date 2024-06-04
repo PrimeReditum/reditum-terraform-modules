@@ -150,6 +150,26 @@ In order to use this module, create a `bindings.json` file on the same place whe
   }
 }
 ```
+### Aetifact Registry Repository Service Bindings
+```json
+{
+  "locals": {
+    "external_project_iam": [],
+    "folder_iam": [],
+    "organization_iam": [],
+    "project_iam": [],
+    "resource_iam": [
+      {
+        "location": "<artifact-registry-repository-service-location>",
+        "name": "<artifact-registry-repository-service-name>",
+        "project_id": "<project-id>",
+        "resource_type": "artifact_registry_repository_service",
+        "role": "<role>"
+      }
+    ]
+  }
+}
+```
 
 ### Cloud Run Service Bindings
 ```json
