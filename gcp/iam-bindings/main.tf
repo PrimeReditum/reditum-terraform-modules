@@ -88,6 +88,18 @@ resource "google_project_iam_member" "project_iam_additive" {
   https://github.com/terraform-google-modules/terraform-google-iam/tree/master/modules
 ***************************************/
 
+resource "google_artifact_registry_repository_iam_member" "artifact_registry_repository_iam_additive" {
+  for_each = {
+    for binding in var.resource_bindings : "${binding.name}.${binding.role}" => binding
+    if binding.resource_type == "cloud_run_service"
+  }
+  location   = each.value.location
+  member     = var.member
+  project    = each.value.project_id
+  repository = each.value.name
+  role       = each.value.role
+}
+
 resource "google_cloud_run_service_iam_member" "cloud_run_iam_additive" {
   for_each = {
     for binding in var.resource_bindings : "${binding.name}.${binding.role}" => binding
